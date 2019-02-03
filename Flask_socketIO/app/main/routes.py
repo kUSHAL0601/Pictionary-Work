@@ -2,7 +2,7 @@ from flask import session, redirect, url_for, render_template, request
 from . import main
 from .forms import LoginForm
 d={}
-
+d_url={}
 @main.route('/', methods=['GET', 'POST'])
 def index():
     """Login form to enter a room."""
@@ -26,7 +26,22 @@ def chat():
     if name == '' or room == '':
         return redirect(url_for('.index'))
     if room in d:
-        return render_template('chat.html', name=name, room=room, role="viewer")
+        if d[room]==name:
+            return render_template('drawer.html', name=name, room=room, role="drawer")
+        return render_template('viewer.html', name=name, room=room, role="viewer")
     else:
         d[room]=name
-        return render_template('chat.html', name=name, room=room, role="drawer")
+        d_url[room]=""
+        return render_template('drawer.html', name=name, room=room, role="drawer")
+
+@main.route('/updateImg',methods=["GET"])
+def upd():
+    url=request.args.get("vy")
+    room = session.get('room', '')
+    d_url[room]=url
+    return
+
+@main.route('/getImg',methods=["GET"])
+def get():
+    room = session.get('room', '')
+    return d_url[room]
