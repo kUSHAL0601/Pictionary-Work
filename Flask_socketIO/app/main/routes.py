@@ -38,10 +38,12 @@ def chat():
 def upd():
     url=request.args.get("vy")
     room = session.get('room', '')
+    # print("\n\n\n\n upd",room,"\n\n\n\n\n")
     d_url[room]=url
     return
 
 @main.route('/getImg',methods=["GET"])
 def get():
     room = session.get('room', '')
+    # print("\n\n\n\n get",room,"\n\n\n\n\n")
     return d_url[room]

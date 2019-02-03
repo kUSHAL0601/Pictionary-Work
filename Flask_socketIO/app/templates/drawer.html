@@ -33,12 +33,16 @@
                 socket.on('status', function(data) {
                     $('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
                     $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                    setTimeout(remove_message,15000);
                 });
                 socket.on('message', function(data) {
+                    console.log(data);
                     $('#chat').val($('#chat').val() + data.msg + '\n');
                     $('#chat').scrollTop($('#chat')[0].scrollHeight);
+                    setTimeout(remove_message,15000);
                 });
             });
+
             function leave_room() {
                 socket.emit('left', {}, function() {
                     socket.disconnect();
@@ -165,6 +169,21 @@
                 }
             }
         }
+        function remove_message()
+        {
+            // alert("Here");
+            var old_message = String(document.getElementById("chat").value);
+            old_message = old_message.split('\n');
+            old_message.shift();
+            old_message.pop();
+            var i;
+            var new_message = ''
+            for (i = 0; i < old_message.length; i++) {
+            new_message += old_message[i] + "\n";
+            }
+            document.getElementById("chat").value = new_message;
+        }
+        
         </script>
 
     <body onload="init()">
