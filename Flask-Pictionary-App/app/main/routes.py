@@ -1,6 +1,7 @@
 from flask import session, redirect, url_for, render_template, request
 from . import main
 from .forms import LoginForm
+import json
 d={}
 d_url={}
 @main.route('/', methods=['GET', 'POST'])
@@ -38,12 +39,17 @@ def chat():
 def upd():
     url=request.args.get("vy")
     room = session.get('room', '')
-    # print("\n\n\n\n upd",room,"\n\n\n\n\n")
     d_url[room]=url
-    return
+    return 'OK'
 
 @main.route('/getImg',methods=["GET"])
 def get():
     room = session.get('room', '')
-    # print("\n\n\n\n get",room,"\n\n\n\n\n")
     return d_url[room]
+
+@main.route('/savecoord',methods=["GET"])
+def savecoord():
+    data = str(request.args.get('point'))
+    with open('co_ordinates.csv',"w") as fd:
+        fd.write(data)
+    return 'OK'
