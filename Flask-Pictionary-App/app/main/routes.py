@@ -4,6 +4,16 @@ from .forms import LoginForm
 import json
 d={}
 d_url={}
+
+words=[]
+from random import shuffle
+import csv
+ 
+with open('./words.csv') as csvDataFile:
+    csvReader = csv.reader(csvDataFile)
+    for row in csvReader:
+        words.append(row[0])
+
 @main.route('/', methods=['GET', 'POST'])
 def index():
     """Login form to enter a room."""
@@ -33,7 +43,9 @@ def chat():
     else:
         d[room]=name
         d_url[room]=""
-        return render_template('drawer.html', name=name, room=room, role="drawer")
+        shuffle(words)
+        w=words[0]
+        return render_template('drawer.html', name=name, room=room, role="drawer", word=w)
 
 @main.route('/updateImg',methods=["GET"])
 def upd():
