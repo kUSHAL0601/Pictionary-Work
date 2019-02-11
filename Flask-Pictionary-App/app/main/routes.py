@@ -4,6 +4,7 @@ from .forms import LoginForm
 import json
 d={}
 d_url={}
+# d_likes={}
 
 words=[]
 from random import shuffle
@@ -45,6 +46,7 @@ def chat():
         d_url[room]=""
         shuffle(words)
         w=words[0]
+        # d_likes[room]=0
         return render_template('drawer.html', name=name, room=room, role="drawer", word=w)
 
 @main.route('/updateImg',methods=["GET"])
@@ -52,12 +54,20 @@ def upd():
     url=request.args.get("vy")
     room = session.get('room', '')
     d_url[room]=url
+    # return {"likes":d_likes[room]}
     return 'OK'
 
 @main.route('/getImg',methods=["GET"])
 def get():
     room = session.get('room', '')
     return d_url[room]
+
+# @main.route('/like',methods=["GET"])
+# def like():
+#     v=int(request.args.get('val'))
+#     d_likes[room]+=v
+#     return 'OK'
+
 
 @main.route('/savecoord',methods=["GET"])
 def savecoord():
