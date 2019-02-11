@@ -1,15 +1,15 @@
-from flask import session, redirect, url_for, render_template, request
+from flask import session, redirect, url_for, render_template, request, send_file
 from . import main
 from .forms import LoginForm
 import json
+import random
+import os
 d={}
 d_url={}
-# d_likes={}
 
 words=[]
 from random import shuffle
 import csv
- 
 with open('./words.csv') as csvDataFile:
     csvReader = csv.reader(csvDataFile)
     for row in csvReader:
@@ -22,10 +22,11 @@ def index():
     if form.validate_on_submit():
         session['name'] = form.name.data
         session['room'] = form.room.data
+        shuffle(words)
+        session['word'] = words[0]
         return redirect(url_for('.chat'))
     elif request.method == 'GET':
-        form.name.data = session.get('name', '')
-        form.room.data = session.get('room', '')
+        pass
     return render_template('index.html', form=form)
 
 
@@ -35,18 +36,16 @@ def chat():
     the session."""
     name = session.get('name', '')
     room = session.get('room', '')
+    w = session.get('word','')
     if name == '' or room == '':
         return redirect(url_for('.index'))
     if room in d:
         if d[room]==name:
-            return render_template('drawer.html', name=name, room=room, role="drawer")
+            return render_template('drawer.html', name=name, room=room, role="drawer",word=w)
         return render_template('viewer.html', name=name, room=room, role="viewer")
     else:
         d[room]=name
         d_url[room]=""
-        shuffle(words)
-        w=words[0]
-        # d_likes[room]=0
         return render_template('drawer.html', name=name, room=room, role="drawer", word=w)
 
 @main.route('/updateImg',methods=["GET"])
@@ -54,7 +53,6 @@ def upd():
     url=request.args.get("vy")
     room = session.get('room', '')
     d_url[room]=url
-    # return {"likes":d_likes[room]}
     return 'OK'
 
 @main.route('/getImg',methods=["GET"])
@@ -62,16 +60,23 @@ def get():
     room = session.get('room', '')
     return d_url[room]
 
-# @main.route('/like',methods=["GET"])
-# def like():
-#     v=int(request.args.get('val'))
-#     d_likes[room]+=v
-#     return 'OK'
-
 
 @main.route('/savecoord',methods=["GET"])
 def savecoord():
-    data = str(request.args.get('point'))
-    with open('co_ordinates.csv',"w") as fd:
-        fd.write(data)
+    data1 = str(request.args.get('pen'))
+    data2 = str(request.args.get('eraser'))
+    with open('pen_co_ordinates.csv',"w") as fd:
+        fd.write(data1)
+    with open('eraser_co_ordinates.csv',"w") as fd:
+        fd.write(data2)
     return 'OK'
+
+@main.route('/static/get_avatar', methods=['GET', 'POST'])
+def get_avatar():
+    img_name = random.choice(list(os.listdir('./app/static/images/avatar')))
+    return send_file('./static/images/avatar/'+img_name)
+
+@main.route('/static/get_backg', methods=['GET', 'POST'])
+def get_backg():
+    img_name = random.choice(list(os.listdir('./app/static/images/background')))
+    return send_file('./static/images/background/'+img_name)

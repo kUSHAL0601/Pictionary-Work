@@ -1,5 +1,57 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
+		<style>
+			body {font-family: Arial, Helvetica, sans-serif;}
+			* {
+				box-sizing: border-box;
+			}
+			button {
+				background-color: teal;
+				color: white;
+				padding: 14px 20px;
+				margin: 8px 0;
+				border: none;
+				cursor: pointer;
+				border-radius: 2ex;
+			}
+
+			button:hover {
+				opacity: 0.8;
+			}
+
+			.col-1 {width: 8.33%;}
+			.col-2 {width: 16.66%;}
+			.col-3 {width: 25%;}
+			.col-4 {width: 33.33%;}
+			.col-5 {width: 41.66%;}
+			.col-6 {width: 50%;}
+			.col-7 {width: 58.33%;}
+			.col-8 {width: 66.66%;}
+			.col-9 {width: 75%;}
+			.col-10 {width: 83.33%;}
+			.col-11 {width: 91.66%;}
+			.col-12 {width: 100%;}
+			[class*="col-"] {
+				float: left;
+				padding: 15px;
+				border-radius: 15px;
+				}
+			.row::after {
+				content: "";
+				clear: both;
+				display: table;
+			}
+			.canvas_css{
+				border-style: solid;
+				border-color: teal;
+				border-radius: 2px;
+				padding-top: 15px;
+				background-color:lightgray;
+			}
+			.canvas_css:hover{
+				cursor:crosshair;
+			}
+		</style>
 		<script>
 				function foo()
 				{
@@ -18,6 +70,8 @@
 						});                
 				}
 		</script>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 		<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
 		<meta content="utf-8" http-equiv="encoding">
 		<title>Pictionary-Chat: {{ room }}</title>
@@ -55,7 +109,8 @@
 
 	<script type="text/javascript">
 
-		var co_ords = [];
+		var pen_co_ords = [];
+		var eraser_co_ords = [];
 		var canvas, ctx, flag = false,
 			prevX = 0,
 			currX = 0,
@@ -107,10 +162,10 @@
 					x = "black";
 					break;
 				case "white":
-					x = "white";
+					x = "lightgrey";
 					break;
 			}
-			if (x == "white") y = 14;
+			if (x == "lightgrey") y = 14;
 			else y = 2;
 		
 		}
@@ -153,7 +208,7 @@
 			$.ajax({
 						url:'http://127.0.0.1:5000/savecoord',
 						method:'GET',
-						data:{point:to_string_func(co_ords)},
+						data:{pen:to_string_func(pen_co_ords),eraser:to_string_func(eraser_co_ords)},
 						success:function(response)
 						{
 						},
@@ -179,7 +234,14 @@
 					ctx.closePath();
 					dot_flag = false;
 					temp = [e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop];
-					co_ords.push(temp);
+					if(x=="lightgrey")
+					{
+						eraser_co_ords.push(temp);
+					}
+					else
+					{
+						pen_co_ords.push(temp);
+					}
 				}
 			}
 			if (res == 'up' || res == "out") {
@@ -193,7 +255,14 @@
 					currY = e.clientY - canvas.offsetTop;
 					draw();
 					temp = [e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop];
-					co_ords.push(temp);
+					if(x=="lightgrey")
+					{
+						eraser_co_ords.push(temp);
+					}
+					else
+					{
+						pen_co_ords.push(temp);
+					}
 				}
 			}
 		}
@@ -217,26 +286,62 @@
 		<script>
 		setInterval(function(){foo()},1000);
 		</script>
-		<h1>ROOM {{ room }} Role: {{role}}</h1>
-		<h1>WORD: {{word}}</h1>
-		<div id="canvasDiv"></div>
-		<!-- <script type="text/javascript" src="../static/html5-canvas-drawing-app.js"></script>
-		<script type="text/javascript">
-			 drawingApp.init();
-		</script> -->
-			<canvas id="can" width="1400" height="400" style="position:absolute;top:15%;left:10%;border:2px solid;"></canvas>
-			<div style="position:absolute;top:19%;left:85%;">Pen</div>
-			<!-- <div style="position:absolute;top:20%;left:45%;width:10px;height:10px;background:green;" id="green" onclick="color(this)"></div>
-			<div style="position:absolute;top:20%;left:46%;width:10px;height:10px;background:blue;" id="blue" onclick="color(this)"></div>
-			<div style="position:absolute;top:20%;left:47%;width:10px;height:10px;background:red;" id="red" onclick="color(this)"></div>
-			<div style="position:absolute;top:22%;left:45%;width:10px;height:10px;background:yellow;" id="yellow" onclick="color(this)"></div>
-			<div style="position:absolute;top:22%;left:46%;width:10px;height:10px;background:orange;" id="orange" onclick="color(this)"></div> -->
-			<div style="position:absolute;top:22%;left:87%;width:15px;height:15px;background:black;" id="black" onclick="color(this)"></div>
-			<div style="position:absolute;top:25%;left:85%;">Eraser</div>
-			<div style="position:absolute;top:28%;left:87%;width:15px;height:15px;background:white;border:2px solid;" id="white" onclick="color(this)"></div>
+		<div class="w3-container w3-teal row">
+		<h1 style="text-align:center;">Room ID:{{ room }} Role: {{role}}</h1>
+		<h1 style="text-align:center;">Word: {{word}}</h1>
+		</div><br><br><br><br>
+		<div class="row">
+			<div class="col-2"></div>
+			<div class="col-8">
+			<canvas id="can" width="1200" height="400" class="canvas_css"></canvas></div>
+			<div class = "col-2">
+				</br>
+				</br>
+				</br>
+				<!-- <div style="position:absolute;top:20%;left:45%;width:10px;height:10px;background:green;" id="green" onclick="color(this)"></div> -->
+				<!-- <div style="position:absolute;top:20%;left:46%;width:10px;height:10px;background:blue;" id="blue" onclick="color(this)"></div> -->
+				<!-- <div style="position:absolute;top:20%;left:47%;width:10px;height:10px;background:red;" id="red" onclick="color(this)"></div> -->
+				<!-- <div style="position:absolute;top:22%;left:45%;width:10px;height:10px;background:yellow;" id="yellow" onclick="color(this)"></div> -->
+				<!-- <div style="position:absolute;top:22%;left:46%;width:10px;height:10px;background:orange;" id="orange" onclick="color(this)"></div> --> 
+				<!-- <div style="width:15px;height:15px;background:black;" id="black" onclick="color(this)"></div>
+				 -->
+				 <img src="https://img.icons8.com/dusk/48/000000/marker-pen.png" id="black" onclick="color(this)" alt="pen">
+				<br />
+				<br />
+				<!-- <div >Eraser</div> -->
+				<!-- <div style="width:15px;height:15px;background:white;border:2px solid;" id="white" onclick="color(this)"></div> -->
+				<img src="https://i.ibb.co/cF7rmYz/eraser-48-289599.png" alt="eraser" border="0" id="white" onclick="color(this)">
+			</div>
+		</div>
+		</br></br></br>
+			<!-- </div> -->
 			<!-- <img id="canvasimg" style="position:absolute;top:15%;left:52%;" style="display:none;"> -->
 			<!-- <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:62%;left:22%;"> -->
-			<div style="position:absolute;top:65%;left:10%;"><textarea id="chat" cols="200" rows="15"></textarea><br><br>
-			<a href="#" onclick="leave_room();" >Leave this room</a></div>
+			<div class="row">
+				<div class="col-2"></div>
+				<div class="col-8"><textarea id="chat" cols="100" rows="10" style="color:teal"readonly></textarea></div>
+				<div class="col-2"></div>
+			</div>
+			<div style="text-align: center">
+				<button onclick="leave_room();" >Leave this room</a>
+			</div>
 		</body>
 </html>
+
+
+
+
+<!-- <canvas id="can" width="1400" height="400" style="position:absolute;top:15%;left:10%;border:2px solid;"></canvas> -->
+<!-- <div style="position:absolute;top:19%;left:85%;">Pen</div> -->
+<!-- <div style="position:absolute;top:20%;left:45%;width:10px;height:10px;background:green;" id="green" onclick="color(this)"></div>
+<div style="position:absolute;top:20%;left:46%;width:10px;height:10px;background:blue;" id="blue" onclick="color(this)"></div>
+<div style="position:absolute;top:20%;left:47%;width:10px;height:10px;background:red;" id="red" onclick="color(this)"></div>
+<div style="position:absolute;top:22%;left:45%;width:10px;height:10px;background:yellow;" id="yellow" onclick="color(this)"></div>
+<div style="position:absolute;top:22%;left:46%;width:10px;height:10px;background:orange;" id="orange" onclick="color(this)"></div> -->
+<!-- <div style="position:absolute;top:22%;left:87%;width:15px;height:15px;background:black;" id="black" onclick="color(this)"></div> -->
+<!-- <div style="position:absolute;top:25%;left:85%;">Eraser</div> -->
+<!-- <div style="position:absolute;top:28%;left:87%;width:15px;height:15px;background:white;border:2px solid;" id="white" onclick="color(this)"></div> -->
+<!-- <img id="canvasimg" style="position:absolute;top:15%;left:52%;" style="display:none;"> -->
+<!-- <input type="button" value="clear" id="clr" size="23" onclick="erase()" style="position:absolute;top:62%;left:22%;"> -->
+<!-- <div style="position:absolute;top:65%;left:10%;"><textarea id="chat" cols="200" rows="15"></textarea><br><br> -->
+<!-- <a href="#" onclick="leave_room();" >Leave this room</a></div> -->

@@ -21,7 +21,6 @@ def joined(message):
     temp_session['message'] = to_display_message
     log.append(dict(temp_session))
     write_to(log)
-    print("\n\n\n\n",dict(temp_session),"\n\n\n\n")
 
 @socketio.on('text', namespace='/chat')
 def text(message):
@@ -51,4 +50,4 @@ def left(message):
     temp_session['message'] = to_display_message
     log.append(dict(temp_session))
     write_to(log)
-    # print("\n\n\n\n",temp_session,"\n\n\n\n")
+    
