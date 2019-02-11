@@ -1,7 +1,9 @@
-from flask import session, redirect, url_for, render_template, request
+import random
+from flask import session, redirect, url_for, render_template, request, send_from_directory, send_file
 from . import main
 from .forms import LoginForm
 import json
+import os
 d={}
 d_url={}
 # d_likes={}
@@ -75,3 +77,13 @@ def savecoord():
     with open('co_ordinates.csv',"w") as fd:
         fd.write(data)
     return 'OK'
+
+@main.route('/static/get_avatar', methods=['GET', 'POST'])
+def get_avatar():
+    img_name = random.choice(list(os.listdir('./app/static/images/avatar')))
+    return send_file('./static/images/avatar/'+img_name)
+
+@main.route('/static/get_backg', methods=['GET', 'POST'])
+def get_backg():
+    img_name = random.choice(list(os.listdir('./app/static/images/background')))
+    return send_file('./static/images/background/'+img_name)
