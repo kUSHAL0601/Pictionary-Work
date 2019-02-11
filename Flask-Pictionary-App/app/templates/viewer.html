@@ -153,6 +153,19 @@
         } 
         function myFunction(x) {
               x.classList.toggle("fa-thumbs-down");
+              if(x.classList.length==3)
+              {
+                  socket.emit('text',{msg:"Liked the drawing!"})
+                  $('#chat').val($('#chat').val() + "Liked the drawing!" + '\n');
+                  $('#chat').scrollTop($('#chat')[0].scrollHeight);
+              }
+              else
+              {
+                socket.emit('text',{msg:"Unliked the drawing"})
+                $('#chat').val($('#chat').val() + "Uniked the drawing" + '\n');
+                $('#chat').scrollTop($('#chat')[0].scrollHeight);
+              }
+              
         }
         function foo()
         {
