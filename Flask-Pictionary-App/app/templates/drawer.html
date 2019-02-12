@@ -6,7 +6,8 @@
 				box-sizing: border-box;
 			}
 			img.avatar {
-				width: 10%;
+				width: 50%;
+				height: 15%;
 				border-radius: 20%;
 			}
 			button {
@@ -290,10 +291,18 @@
 		setInterval(function(){foo()},1000);
 		</script>
 		<div class="w3-container w3-teal row">
-		<img src="/static/get_myavatar" class="avatar" >
-		<h1 style="text-align:center;">Room ID:{{ room }} Role: {{role}}</h1>
-		<h1 style="text-align:center;">Word: {{word}}</h1>
-		</div><br><br><br><br>
+		<div class="col-2" style="text-align:center;">
+			<img src="/static/get_myavatar" class="avatar" >
+			<h3 >{{name}}</h3>
+		</div>
+		<div class = "col-8">
+				<h1 style="text-align:center;">PICTIONARY-APP</h1>
+			<h1 style="text-align:center;">Room ID:{{ room }} Role: {{role}}</h1>
+			<h1 style="text-align:center;">Word: {{word}}</h1>
+		</div>
+		<div class="col-2"></div>
+		</div>
+		<br><br><br><br>
 		<div class="row">
 			<div class = "col-2" style="text-align:center;">
 				<br><br><br>

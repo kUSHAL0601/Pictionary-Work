@@ -147,9 +147,19 @@
     </script>
     </head>
 <body>
-  <div class="w3-container w3-teal">
-    <h1 style="text-align:center">Room: {{ room }} Role: {{role}}</h1>
-  </div>
+    <div class="w3-container w3-teal row">
+        <div class="col-2" style="text-align:center;">
+          <img src="/static/get_myavatar" class="avatar" >
+          <h3 >{{name}}</h3>
+        </div>
+        <div class = "col-8">
+          <h1 style="text-align:center;">PICTIONARY-APP</h1>
+          <h1 style="text-align:center;">Room ID:{{ room }} </h1>
+          <h1 style="text-align:center;"> Role: {{role}}</h1>
+          <!-- <h1 style="text-align:center;">Word: {{word}}</h1> -->
+        </div>
+        <div class="col-2"></div>
+        </div>
   <br><br><br>
   <div class="row">
     <div class="col-2">
