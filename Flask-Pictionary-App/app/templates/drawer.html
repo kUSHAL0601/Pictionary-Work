@@ -92,12 +92,12 @@
 				socket.on('status', function(data) {
 					$('#chat').val($('#chat').val() + '<' + data.msg + '>\n');
 					$('#chat').scrollTop($('#chat')[0].scrollHeight);
-					setTimeout(remove_message,15000);
+					setTimeout(remove_message,45000);
 				});
 				socket.on('message', function(data) {
 					$('#chat').val($('#chat').val() + data.msg + '\n');
 					$('#chat').scrollTop($('#chat')[0].scrollHeight);
-					setTimeout(remove_message,15000);
+					setTimeout(remove_message,45000);
 				});
 			});
 
@@ -304,7 +304,7 @@
 		</div>
 		<br><br><br><br>
 		<div class="row">
-			<div class = "col-2" style="text-align:center;">
+			<div class = "col-2" style="text-align:right;">
 				<br><br><br>
 				<!-- <div style="position:absolute;top:20%;left:45%;width:10px;height:10px;background:green;" id="green" onclick="color(this)"></div> -->
 				<!-- <div style="position:absolute;top:20%;left:46%;width:10px;height:10px;background:blue;" id="blue" onclick="color(this)"></div> -->
@@ -319,14 +319,14 @@
 				<!-- <div style="width:15px;height:15px;background:white;border:2px solid;" id="white" onclick="color(this)"></div> -->
 				<img src="https://i.ibb.co/cF7rmYz/eraser-48-289599.png" alt="eraser" border="0" id="white" onclick="color(this)">
 			</div>
-			<div class="col-6" style="text-align:center;">
+			<div class="col-6" style="text-align:right;">
 				<canvas id="can" width="800" height="600" class="canvas_css"></canvas>
 				<br>
 				<div style="padding-top: 10px;">
 						<button onclick="leave_room();" >Leave this room</button>
 					</div>
 			</div>
-			<div class="col-4">
+			<div class="col-4" style="text-align:left;">
 				<textarea id="chat" cols="56" rows="28" style="color:teal;" readonly></textarea>
 			</div>
 		</div>
