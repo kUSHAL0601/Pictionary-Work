@@ -81,6 +81,7 @@
 		<meta content="utf-8" http-equiv="encoding">
 		<title>Pictionary-Chat: {{ room }}</title>
 		<script type="text/javascript" src="//code.jquery.com/jquery-1.4.2.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
 		<script type="text/javascript" charset="utf-8">
 			var socket;
@@ -115,6 +116,7 @@
 
 		var pen_co_ords = [];
 		var eraser_co_ords = [];
+		var highlighter_co_ords=[];
 		var canvas, ctx, flag = false,
 			prevX = 0,
 			currX = 0,
@@ -168,9 +170,24 @@
 				case "white":
 					x = "white";
 					break;
+				case "highlighter":
+					x="highlighter"
+					break;
 			}
 			if (x == "white") y = 14;
 			else y = 2;
+			if(x=="highlighter"){
+				$('.canvas_css').hover(function() {
+		        	$(this).css('cursor','hand');
+    			});
+
+			}
+			else
+			{
+				$('.canvas_css').hover(function() {
+		        	$(this).css('cursor','crosshair');
+    			});
+			}
 		
 		}
 		
@@ -212,7 +229,7 @@
 			$.ajax({
 						url:'http://127.0.0.1:5000/savecoord',
 						method:'GET',
-						data:{pen:to_string_func(pen_co_ords),eraser:to_string_func(eraser_co_ords)},
+						data:{pen:to_string_func(pen_co_ords),eraser:to_string_func(eraser_co_ords),highlighter:to_string_func(highlighter_co_ords)},
 						success:function(response)
 						{
 						},
@@ -229,22 +246,29 @@
 				currX = e.clientX - canvas.offsetLeft;
 				currY = e.clientY - canvas.offsetTop;
 		
-				flag = true;
-				dot_flag = true;
-				if (dot_flag) {
-					ctx.beginPath();
-					ctx.fillStyle = x;
-					ctx.fillRect(currX, currY, 2, 2);
-					ctx.closePath();
-					dot_flag = false;
-					temp = [e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop];
-					if(x=="white")
-					{
-						eraser_co_ords.push(temp);
-					}
-					else
-					{
-						pen_co_ords.push(temp);
+				if(x=="highlighter")
+				{
+					highlighter_co_ords.push([e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop]);
+				}
+				else
+				{
+					flag = true;
+					dot_flag = true;
+					if (dot_flag) {
+						ctx.beginPath();
+						ctx.fillStyle = x;
+						ctx.fillRect(currX, currY, 2, 2);
+						ctx.closePath();
+						dot_flag = false;
+						temp = [e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop];
+						if(x=="white")
+						{
+							eraser_co_ords.push(temp);
+						}
+						else
+						{
+							pen_co_ords.push(temp);
+						}
 					}
 				}
 			}
@@ -252,20 +276,27 @@
 				flag = false;
 			}
 			if (res == 'move') {
-				if (flag) {
-					prevX = currX;
-					prevY = currY;
-					currX = e.clientX - canvas.offsetLeft;
-					currY = e.clientY - canvas.offsetTop;
-					draw();
-					temp = [e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop];
-					if(x=="white")
-					{
-						eraser_co_ords.push(temp);
-					}
-					else
-					{
-						pen_co_ords.push(temp);
+				if(x=="highlighter")
+				{
+					highlighter_co_ords.push([e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop]);
+				}
+				else
+				{
+					if (flag) {
+						prevX = currX;
+						prevY = currY;
+						currX = e.clientX - canvas.offsetLeft;
+						currY = e.clientY - canvas.offsetTop;
+						draw();
+						temp = [e.clientX - canvas.offsetLeft , e.clientY - canvas.offsetTop];
+						if(x=="white")
+						{
+							eraser_co_ords.push(temp);
+						}
+						else
+						{
+							pen_co_ords.push(temp);
+						}
 					}
 				}
 			}
@@ -313,11 +344,14 @@
 				<!-- <div style="position:absolute;top:22%;left:46%;width:10px;height:10px;background:orange;" id="orange" onclick="color(this)"></div> --> 
 				<!-- <div style="width:15px;height:15px;background:black;" id="black" onclick="color(this)"></div>
 				-->
-				<img src="https://img.icons8.com/dusk/48/000000/marker-pen.png" id="black" onclick="color(this)" alt="pen">
+				<img src="https://img.icons8.com/dusk/48/000000/marker-pen.png" id="black" onclick="color(this)" alt="pen" style="border: 2px;border-style: solid;border-color: teal;border-width: 5px;">
 				<br><br>
 				<!-- <div >Eraser</div> -->
 				<!-- <div style="width:15px;height:15px;background:white;border:2px solid;" id="white" onclick="color(this)"></div> -->
-				<img src="https://i.ibb.co/cF7rmYz/eraser-48-289599.png" alt="eraser" border="0" id="white" onclick="color(this)">
+				<img src="https://i.ibb.co/cF7rmYz/eraser-48-289599.png" alt="eraser"  id="white" onclick="color(this)" style="border-width: 5px;border-style: solid;border-color: teal;">
+				<br>
+				<br>
+				<i class="fa fa-hand-pointer-o fa-3x" style="border-width: 5px;border-style: solid;border-color: teal;padding: 2px 2px 2px 2px;" id="highlighter" onclick="color(this)"></i>
 			</div>
 			<div class="col-6" style="text-align:right;">
 				<canvas id="can" width="800" height="600" class="canvas_css"></canvas>

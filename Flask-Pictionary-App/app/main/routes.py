@@ -66,10 +66,13 @@ def get():
 def savecoord():
     data1 = str(request.args.get('pen'))
     data2 = str(request.args.get('eraser'))
+    data3 = str(request.args.get('highlighter'))
     with open('pen_co_ordinates.csv',"w") as fd:
         fd.write(data1)
     with open('eraser_co_ordinates.csv',"w") as fd:
         fd.write(data2)
+    with open('highlighter_co_ordinates.csv',"w") as fd:
+        fd.write(data3)
     return 'OK'
 
 @main.route('/static/get_avatar', methods=['GET', 'POST'])
